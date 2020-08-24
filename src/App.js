@@ -11,7 +11,8 @@ function App() {
   async function handleAddRepository() {
     const project = {
       title: `Projeto Piloto ${Date.now()}`,
-      owner: "Werliton Silva"
+      url: "Werliton Silva",
+      techs: ['Node.js', 'ReactJS']
     }
     const repositoryCreated = await api.post(endpoints.repositories, project)
 
@@ -21,7 +22,13 @@ function App() {
   }
 
   async function handleRemoveRepository(id) {
-    // TODO
+    // Encontrar repository
+    if (id) {
+      await api.delete(`${endpoints.repositories}/${id}`)
+      console.log('Repository deleted');
+
+      setRepositories(repositories.filter(item => item.id !== id))
+    }
   }
 
   useEffect(() => {
@@ -33,19 +40,18 @@ function App() {
 
     setRepositories((await response).data)
   }
+
   return (
     <div>
       <ul data-testid="repository-list">
         {
-          repositories.length === 0 ?
-            <h2>Nenhum repositório cadastrado!</h2>
-            :
+         
             repositories.map(item => {
               return (
                 <li key={item.id}>
                   <b>{item.title}</b>
 
-                  <button onClick={() => handleRemoveRepository(1)}>
+                  <button onClick={() => handleRemoveRepository(item.id)}>
                     Remover
                   </button>
                 </li>
